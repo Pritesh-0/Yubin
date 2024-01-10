@@ -1,34 +1,43 @@
 import asyncio
 import sys
 
+
 async def handle_client(reader, writer):
 
     async def read():
         while True:
-            data = await reader.read(100)
-            if not data:
-                break
+            #try:
+                #async with asyncio.timeout(5):
+                    #print('r')
+                    data = await reader.read(100)
+                    if not data:
+                        break
 
-            message = data.decode()
-            print(f"Received: {message}")
-            sys.stdout.flush()
+                    message = data.decode()
+                    print(f"Received: {message}")
+                    sys.stdout.flush()
+            #except TimeoutError:
+                #print('timeout in read')
 
     async def write():
         while True:
-            response = input("enter message: ")
-            if response.lower() == 'exit':
-                break
+            #try:
+                #async with asyncio.timeout(5):
+                    #print('w')
+                    response = await asyncio.to_thread(input,"enter message: ")
 
-            writer.write(response.encode())
-            await writer.drain()
-            sys.stdout.flush()
-
-            await asyncio.sleep(1)
+                    writer.write(response.encode())
+                    await writer.drain()
+                    sys.stdout.flush()
+            #except TimeoutError:
+                #print('timeout in write')
 
 
     try:
         task_read = asyncio.create_task(read())
         task_write = asyncio.create_task(write())
+       
+    
         await asyncio.gather(task_read, task_write)
     finally:
         writer.close()
