@@ -38,12 +38,12 @@ ids={
         'fpv':0x500,
         }
 
-with can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True) as bus:
-
-    msg = build(0x300,15200000,10,11)
+if __name__ == '__main__':
+    with can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True) as bus:
+        msg = build(0x300,15200000,10,11)
     
-    disect(msg)
-    bus.send(msg)
+        disect(msg)
+        bus.send(msg)
 
 
 
