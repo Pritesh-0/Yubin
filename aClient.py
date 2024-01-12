@@ -1,6 +1,21 @@
 import asyncio
 import sys
+import pygame
+import json
+import time
+from serialControl import conv
 
+
+pygame.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+
+def getPwm():
+    pygame.event.get()
+    joystick=joysticks[0]
+    b1,b2,b3 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(4)
+
+    pos = json.dumps({"A1" : conv(b1), "A2" : conv(b2), "A3" : conv(b3)})
+    return pos
 
 async def read(reader):
     while True:
@@ -22,12 +37,13 @@ async def write(writer):
         #try:
             #async with asyncio.timeout(5):
                 #print('w')
-                message = await asyncio.to_thread(input,"enter message: ")
+                message = await asyncio.to_thread(getPwm)
 
 
                 writer.write(message.encode())
                 await writer.drain()
                 sys.stdout.flush()
+                time.sleep(0.2)
         #except TimeoutError:
             #print('timeout in write')
         
