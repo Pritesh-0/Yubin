@@ -12,9 +12,10 @@ joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_coun
 def getPwm():
     pygame.event.get()
     joystick=joysticks[0]
-    b1,b2,b3 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(4)
+    b1,b2,b3,b4 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(3), joystick.get_axis(4)
 
-    pos = json.dumps({"A1" : conv(b1), "A2" : conv(b2), "A3" : conv(b3)})
+    pos = json.dumps({"A1" : conv(b1), "A2" : conv(b2), "A3" : conv(b3), "A4":conv(b4)})
+    print(pos)
     return pos
 
 async def read(reader):

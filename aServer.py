@@ -1,13 +1,23 @@
 import asyncio
 import sys
 import json
-from CanSocket import build, disect
+import can
+from canSR import build, disect
 
+interface = sys.argv[1]
 bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
 def sendCan(data):
     data = json.loads(data)
-    pwm1=data['A1']
-    msg=build(0x300,pwm1,10,11)
+    pwm1,pwm2,pwm3,pwm4=data['A1'],data['A2'],data['A3'],data['A4']
+    msg1=build(0x300,pwm1,10,10)
+    bus.send(msg1)
+    msg2=build(0x300,pwm2,10,11)
+    bus.send(msg2)
+    msg3=build(0x300,pwm3,10,12)
+    bus.send(msg3)
+    #msg4=build(0x300,pwm4,10,13)
+    #bus.send(msg4)
+
 
 async def handle_client(reader, writer):
 
