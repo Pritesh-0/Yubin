@@ -1,6 +1,13 @@
 import asyncio
 import sys
+import json
+from CanSocket import build, disect
 
+bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
+def sendCan(data):
+    data = json.loads(data)
+    pwm1=data['A1']
+    msg=build(0x300,pwm1,10,11)
 
 async def handle_client(reader, writer):
 
@@ -14,7 +21,8 @@ async def handle_client(reader, writer):
                         break
 
                     message = data.decode()
-                    print(f"Received: {message}")
+                    sendCan(message)
+                    #print(f"Received: {message}")
                     sys.stdout.flush()
             #except TimeoutError:
                 #print('timeout in read')
