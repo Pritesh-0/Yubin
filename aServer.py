@@ -4,25 +4,19 @@ import json
 import can
 from canSR import build, disect
 
+cid={'idmo':0x200,'bio':0x300}
 interface = sys.argv[1]
+can_id = cid[sys.argv[2]]
 #bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
 def sendCan(data): 
     data = json.loads(data)
     #print(data)
     pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
     button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
-    msg1=build(0x300,pwm[0],10,10)
-    #bus.send(msg1)
-    msg2=build(0x300,pwm[1],10,11)
-    #bus.send(msg2)
-    msg3=build(0x300,pwm[2],10,12)
-    #bus.send(msg3)
-    msg4=build(0x300,pwm[3],10,13)
-    #bus.send(msg4)
-    print(msg1)
-    print(msg2)
-    print(msg3)
-    print(msg4)
+    motors=[10,11,12,13]
+    for i in range(4):
+        msg=build(can_id,pwm[i],10,motors[i])
+        print(msg)
 
 
 async def handle_client(reader, writer):
