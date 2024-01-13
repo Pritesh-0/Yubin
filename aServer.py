@@ -5,18 +5,24 @@ import can
 from canSR import build, disect
 
 interface = sys.argv[1]
-bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
-def sendCan(data):
+#bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
+def sendCan(data): 
     data = json.loads(data)
-    pwm1,pwm2,pwm3,pwm4=data['A1'],data['A2'],data['A3'],data['A4']
-    msg1=build(0x300,pwm1,10,10)
-    bus.send(msg1)
-    msg2=build(0x300,pwm2,10,11)
-    bus.send(msg2)
-    msg3=build(0x300,pwm3,10,12)
-    bus.send(msg3)
-    #msg4=build(0x300,pwm4,10,13)
+    #print(data)
+    pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
+    button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
+    msg1=build(0x300,pwm[0],10,10)
+    #bus.send(msg1)
+    msg2=build(0x300,pwm[1],10,11)
+    #bus.send(msg2)
+    msg3=build(0x300,pwm[2],10,12)
+    #bus.send(msg3)
+    msg4=build(0x300,pwm[3],10,13)
     #bus.send(msg4)
+    print(msg1)
+    print(msg2)
+    print(msg3)
+    print(msg4)
 
 
 async def handle_client(reader, writer):
@@ -26,11 +32,10 @@ async def handle_client(reader, writer):
             #try:
                 #async with asyncio.timeout(5):
                     #print('r')
-                    data = await reader.read(100)
+                    data = await reader.read(1000)
                     if not data:
                         break
-
-                    message = data.decode()
+                    message = data.decode('utf-8')
                     sendCan(message)
                     #print(f"Received: {message}")
                     sys.stdout.flush()

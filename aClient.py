@@ -12,9 +12,10 @@ joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_coun
 def getPwm():
     pygame.event.get()
     joystick=joysticks[0]
-    b1,b2,b3,b4 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(3), joystick.get_axis(4)
+    a1,a2,a3,a4 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(3), joystick.get_axis(4)
+    b1,b2,b3,b4,b5 = joystick.get_button(0), joystick.get_button(1), joystick.get_button(2), joystick.get_button(3), joystick.get_button(4)
 
-    pos = json.dumps({"A1" : conv(b1), "A2" : conv(b2), "A3" : conv(b3), "A4":conv(b4)})
+    pos = json.dumps({"pwm1" : conv(a1), "pwm2" : conv(a2), "pwm3" : conv(a3), "pwm4" : conv(a4), "b1" : str(b1), "b2":str(b2),"b3":str(b3),"b4":str(b4),"b5":str(b5)})
     print(pos)
     return pos
 
@@ -23,7 +24,7 @@ async def read(reader):
         #try:
             #async with asyncio.timeout(5):
                 #print('r')
-                data = await reader.read(100)
+                data = await reader.read(1000)
                 if not data:
                     break
 
@@ -41,7 +42,7 @@ async def write(writer):
                 message = await asyncio.to_thread(getPwm)
 
 
-                writer.write(message.encode())
+                writer.write(message.encode('utf-8'))
                 await writer.drain()
                 sys.stdout.flush()
                 time.sleep(0.2)
