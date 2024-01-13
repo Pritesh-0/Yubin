@@ -3,6 +3,7 @@ import sys
 import pygame
 import json
 import time
+import pickle
 from serialControl import conv
 
 
@@ -15,8 +16,8 @@ def getPwm():
     a1,a2,a3,a4 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(3), joystick.get_axis(4)
     b1,b2,b3,b4,b5 = joystick.get_button(0), joystick.get_button(1), joystick.get_button(2), joystick.get_button(3), joystick.get_button(4)
 
-    pos = json.dumps({"pwm1" : conv(a1), "pwm2" : conv(a2), "pwm3" : conv(a3), "pwm4" : conv(a4), "b1" : str(b1), "b2":str(b2),"b3":str(b3),"b4":str(b4),"b5":str(b5)})
-    print(pos)
+    pos = pickle.dumps({"pwm1" : conv(a1), "pwm2" : conv(a2), "pwm3" : conv(a3), "pwm4" : conv(a4), "b1" : str(b1), "b2":str(b2),"b3":str(b3),"b4":str(b4),"b5":str(b5)})
+    #print(pos)
     return pos
 
 async def read(reader):
@@ -42,10 +43,10 @@ async def write(writer):
                 message = await asyncio.to_thread(getPwm)
 
 
-                writer.write(message.encode('utf-8'))
+                writer.write(message)
                 await writer.drain()
                 sys.stdout.flush()
-                time.sleep(0.2)
+                time.sleep(0.3)
         #except TimeoutError:
             #print('timeout in write')
         

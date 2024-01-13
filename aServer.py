@@ -3,6 +3,7 @@ import sys
 import json
 import can
 import serial
+import pickle
 from canSR import build, disect
 
 cid={'idmo':200,'bio':300}
@@ -20,7 +21,7 @@ sob=serial.Serial(
 sob.write(bytes('S4\r\n','utf-8'))
 sob.write(bytes('O\r\n','utf-8'))
 def sendCan(data): 
-    data = json.loads(data)
+    data = pickle.loads(data)
     #print(data)
     pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
     button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
@@ -46,11 +47,13 @@ async def handle_client(reader, writer):
             #try:
                 #async with asyncio.timeout(5):
                     #print('r')
-                    data = await reader.read(1000)
+                    data = await reader.read(100000)
                     if not data:
                         break
-                    message = data.decode('utf-8')
-                    sendCan(message)
+                    #message = pickle.loads(data)
+                    #print(message)
+                    #message = data.decode()
+                    sendCan(data)
                     #print(f"Received: {message}")
                     sys.stdout.flush()
             #except TimeoutError:
