@@ -2,21 +2,41 @@ import asyncio
 import sys
 import json
 import can
+import serial
 from canSR import build, disect
 
-cid={'idmo':0x200,'bio':0x300}
+cid={'idmo':200,'bio':300}
 interface = sys.argv[1]
 can_id = cid[sys.argv[2]]
 #bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
+sob=serial.Serial(
+		port='/dev/ttyACM0',
+		baudrate=115200,
+		parity=serial.PARITY_NONE,
+		stopbits=serial.STOPBITS_ONE,
+		bytesize=serial.EIGHTBITS,
+		timeout=1
+		)      
+sob.write(bytes('S4\r\n','utf-8'))
+sob.write(bytes('O\r\n','utf-8'))
 def sendCan(data): 
     data = json.loads(data)
     #print(data)
     pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
     button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
     motors=[10,11,12,13]
+    mot=[24,25,26,27,28]
     for i in range(4):
         msg=build(can_id,pwm[i],10,motors[i])
         print(msg)
+        #bus.send(msg)
+        sob.write(msg)
+
+    for i in range(5):
+        msg=build(can_id,button[i],10,mot[i])
+        #print(msg)
+        #bus.send(msg)
+        sob.write(msg)
 
 
 async def handle_client(reader, writer):
