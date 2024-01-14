@@ -13,10 +13,19 @@ def sendCan(data):
     #print(data)
     pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
     button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
+    stop,start=int(data["stop"]),int(data["start"])
     astro=[0,0]
     motors=[10,11,12,13]
     astro_motor=[25,26]
     
+    if stop ==1:
+        sob.write(bytes('C\r\n','utf-8'))
+    if start==1:
+        #sob.write(bytes('h\r\n','utf-8'))
+        #sob.write(bytes('S4\r\n','utf-8'))
+        sob.write(bytes('O\r\n','utf-8'))
+
+
     if button[4]==1:
         global fpv
         fpvmsg = build(500,0,40,fpv%4)
@@ -39,9 +48,9 @@ def sendCan(data):
     elif button[3]==1:
         astro[1]=1
     for i in range(2):
-        msg=build(can_id,astro[i],10,astro_motor[i])
+        msg=build(400,astro[i],10,astro_motor[i])
         print(msg)
-        #sob.write(msg)
+        sob.write(msg)
 
 
 async def handle_client(reader, writer):

@@ -15,8 +15,9 @@ def getPwm():
     joystick=joysticks[0]
     a1,a2,a3,a4 = joystick.get_axis(0),joystick.get_axis(1),joystick.get_axis(3), joystick.get_axis(4)
     b1,b2,b3,b4,b5 = joystick.get_button(0), joystick.get_button(1), joystick.get_button(2), joystick.get_button(3), joystick.get_button(4)
-
-    pos = pickle.dumps({"pwm1" : conv(a1), "pwm2" : conv(a2), "pwm3" : conv(a3), "pwm4" : conv(a4), "b1" : str(b1), "b2":str(b2),"b3":str(b3),"b4":str(b4),"b5":str(b5)})
+    
+    stop,start=joystick.get_button(6), joystick.get_button(7)
+    pos = pickle.dumps({"pwm1" : conv(a1), "pwm2" : conv(a2), "pwm3" : conv(a3), "pwm4" : conv(a4), "b1" : str(b1), "b2":str(b2),"b3":str(b3),"b4":str(b4),"b5":str(b5),"stop":str(stop), "start":str(start)})
     #print(pos)
     return pos
 
