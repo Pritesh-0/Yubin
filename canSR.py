@@ -27,10 +27,11 @@ def build(can_id, pwm, ID,motor):
 
 
 def disect(frame):
-    can_id,dlc,data = hex(frame.arbitration_id), frame.dlc, frame.data
+    #frame = frame.decode()
+    can_id ,dlc, data = frame[1:9], frame[9:10], frame[10:22]
     print('can_id: ',can_id)
     print('dlc: ',dlc)
-    print('pwm: ', int.from_bytes(bytes(data[:4]),'big'))
+    print('pwm: ', int.from_bytes(bytes(data[:4]),'little'))
     print('Id: ', data[4])
     print('Motor_no: ',data[5])
 
@@ -42,12 +43,10 @@ ids={
         'fpv':0x500,
         }
 
-if __name__ == '__main__':
-    with can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True) as bus:
-        msg = build(0x300,15200000,10,11)
-    
-        disect(msg)
-        bus.send(msg)
+#if __name__ == '__main__':
+        #msg = build(0x100,0102030405,10,11)
+        #print(msg)
+        #disect(msg)
 
 
 
