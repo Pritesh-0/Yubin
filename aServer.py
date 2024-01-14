@@ -13,24 +13,34 @@ def sendCan(data):
     #print(data)
     pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
     button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
+    astro=[0,0]
     motors=[10,11,12,13]
-    mot=[25,26,27,28]
+    astro_motor=[25,26]
     
     if button[4]==1:
         global fpv
-        fpvmsg = build(500,0,20,fpv%4)
+        fpvmsg = build(500,0,40,fpv%4)
         fpv+=1
-        print(fpvmsg)
-        sob.write(fpvmsg)
+        #print(fpvmsg)
+        #sob.write(fpvmsg)
 
     for i in range(4):
         msg=build(can_id,pwm[i],10,motors[i])
         #print(msg)
         #sob.write(msg)
+    
+    if button[0]==1:
+        astro[0]=2
+    elif button[2]==1:
+        astro[0]=1
 
-    for i in range(4):
-        msg=build(can_id,button[i],10,mot[i])
-        #print(msg)
+    if button[1]==1:
+        astro[1]=2
+    elif button[3]==1:
+        astro[1]=1
+    for i in range(2):
+        msg=build(can_id,astro[i],10,astro_motor[i])
+        print(msg)
         #sob.write(msg)
 
 
