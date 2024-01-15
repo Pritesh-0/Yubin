@@ -1,14 +1,16 @@
 import asyncio
 import sys
 import pygame
-import json
 import time
 import pickle
-from serialControl import conv
 
+def conv(v):
 
-pygame.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+    v=int(v*10000)
+    vs=float(v-(10000))/float(20000)
+    val = 19200000 + int(vs*8000000)
+    return str(val)
+
 
 def getPwm():
     pygame.event.get()
@@ -23,35 +25,22 @@ def getPwm():
 
 async def read(reader):
     while True:
-        #try:
-            #async with asyncio.timeout(5):
-                #print('r')
-                data = await reader.read(1000)
-                if not data:
-                    break
+        data = await reader.read(1000)
+        if not data:
+            break
 
-                message = data.decode()
-                print(f"Received: {message}")
-                sys.stdout.flush()
-        #except TimeoutError:
-            #print('timeout in read')
+        message = data.decode()
+        #print(f"Received: {message}")
+        sys.stdout.flush()
 
 async def write(writer):
     while True:
-        #try:
-            #async with asyncio.timeout(5):
-                #print('w')
-                message = await asyncio.to_thread(getPwm)
+        message = await asyncio.to_thread(getPwm)
+        writer.write(message)
+        await writer.drain()
+        sys.stdout.flush()
+        #time.sleep(0.3)
 
-
-                writer.write(message)
-                await writer.drain()
-                sys.stdout.flush()
-                time.sleep(0.3)
-        #except TimeoutError:
-            #print('timeout in write')
-        
-        #await asyncio.sleep(1)
 
 async def main():
     reader, writer = await asyncio.open_connection('127.0.0.1', 8888)
@@ -66,5 +55,8 @@ async def main():
         await writer.wait_closed()
 
 if __name__ == '__main__':
+    pygame.init()
+    joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+
     asyncio.run(main())
 

@@ -2,11 +2,6 @@ import can
 import sys
 import struct
 
-
-
-#print(interface)
-
-#bus = can.Bus(interface = 'socketcan',channel = interface)
     
 def build(can_id, pwm, ID,motor):
 
@@ -17,12 +12,6 @@ def build(can_id, pwm, ID,motor):
     for i in range(6):
         pd+="{:02X}".format(data[i])
     frame=bytes('T','utf-8')+bytes('00000'+str(can_id),'utf-8')+bytes(str(dlc),'utf-8')+bytes(pd,'utf-8')+bytes('\r\n','utf-8')
-    #frame = can.Message(
-    #       arbitration_id = can_id, 
-    #      is_extended_id = True,
-    #       data = data,
-    #      dlc = dlc,
-    #      )
     return frame
 
 

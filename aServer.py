@@ -1,90 +1,79 @@
 import asyncio
 import sys
-import json
-import can
 import serial
 import pickle
 import time
 from canSR import build, disect
 
 fpv=0
+can_toggle=1
 def sendCan(data): 
+    global can_toggle
     data = pickle.loads(data)
     #print(data)
     pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
     button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
     stop,start=int(data["stop"]),int(data["start"])
     astro=[0,0]
-    motors=[10,11,12,13]
+    motors=[10,11,15,16]
     astro_motor=[25,26]
-    
+
     if stop ==1:
         sob.write(bytes('C\r\n','utf-8'))
+        can_toggle=0
+        print("Stop")
     if start==1:
-        #sob.write(bytes('h\r\n','utf-8'))
-        #sob.write(bytes('S4\r\n','utf-8'))
         sob.write(bytes('O\r\n','utf-8'))
+        can_toggle=1
+        print("Start")
 
+    if can_toggle==1:
+        if button[4]==1:
+            global fpv
+            fpvmsg = build(500,0,40,fpv%4)
+            fpv+=1
+            print(fpvmsg)
+            sob.write(fpvmsg)
 
-    if button[4]==1:
-        global fpv
-        fpvmsg = build(500,0,40,fpv%4)
-        fpv+=1
-        #print(fpvmsg)
-        #sob.write(fpvmsg)
-
-    for i in range(4):
-        msg=build(can_id,pwm[i],10,motors[i])
-        #print(msg)
-        #sob.write(msg)
+        for i in range(4):
+            msg=build(can_id,pwm[i],10,motors[i])
+            #print(msg)
+            #sob.write(msg)
     
-    if button[0]==1:
-        astro[0]=2
-    elif button[2]==1:
-        astro[0]=1
+        if button[0]==1:
+            astro[0]=2
+        elif button[2]==1:
+            astro[0]=1
 
-    if button[1]==1:
-        astro[1]=2
-    elif button[3]==1:
-        astro[1]=1
-    for i in range(2):
-        msg=build(400,astro[i],10,astro_motor[i])
-        print(msg)
-        sob.write(msg)
+        if button[1]==1:
+            astro[1]=2
+        elif button[3]==1:
+            astro[1]=1
+        for i in range(2):
+            msg=build(400,astro[i],10,astro_motor[i])
+            print(msg)
+            sob.write(msg)
+        
+
+            #time.sleep(0.1)
 
 
 async def handle_client(reader, writer):
 
     async def read():
         while True:
-            #try:
-                #async with asyncio.timeout(5):
-                    #print('r')
-                    data = await reader.read(100000)
-                    if not data:
-                        break
-                    #message = pickle.loads(data)
-                    #print(message)
-                    #message = data.decode()
-                    sendCan(data)
-                    #print(f"Received: {message}")
-                    sys.stdout.flush()
-            #except TimeoutError:
-                #print('timeout in read')
+            data = await reader.read(100000)
+            if not data:
+                break
+            sendCan(data)
+            sys.stdout.flush()
 
     async def write():
         while True:
-            #try:
-                #async with asyncio.timeout(5):
-                    #print('w')
-                    response = await asyncio.to_thread(input,"enter message: ")
-
-                    writer.write(response.encode())
-                    await writer.drain()
-                    sys.stdout.flush()
-            #except TimeoutError:
-                #print('timeout in write')
-
+            response = await asyncio.to_thread(input)
+            writer.write(response.encode())
+            await writer.drain()
+            sys.stdout.flush()
 
     try:
         task_read = asyncio.create_task(read())
@@ -109,9 +98,9 @@ if __name__ == '__main__':
     cid={'idmo':200,'bio':300}
     interface = sys.argv[1]
     can_id = cid[sys.argv[2]]
-    #bus = can.Bus(interface = 'socketcan',channel = interface, receive_own_messages = True)
     sob=serial.Serial(
         port='/dev/ttyACM'+str(interface),
+        #port= '/dev/pts/5',
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
