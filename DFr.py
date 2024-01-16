@@ -40,6 +40,11 @@ class slcan:
     def stop(self):
         self._write('C')
 
+    def send(self):
+        for f in self.write_buff:
+            self._write(f)
+        self.write_buff.clear()
+
 
 if __name__=='__main__':
     df = slcan(0)

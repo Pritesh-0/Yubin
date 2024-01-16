@@ -54,7 +54,7 @@ def sendCan(data):
             msg=build(400,astro[i],10,astro_motor[i])
             df.write(msg)
         
-    print(df.write_buff)
+    df.send()
     #time.sleep(1)
 
 async def handle_client(reader, writer):
