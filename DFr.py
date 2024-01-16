@@ -19,7 +19,7 @@ class slcan:
         time.sleep(1)
         self._write('S4')
         time.sleep(1)
-        self._write('O')
+        self.start()
         self._write('t123411223344')
 
 
@@ -33,6 +33,12 @@ class slcan:
 
     def write(self,frame):
         self.write_buff.append(frame)
+
+    def start(self):
+        self._write('O')
+    
+    def stop(self):
+        self._write('C')
 
 
 if __name__=='__main__':

@@ -4,6 +4,7 @@ import serial
 import pickle
 import time
 from canSR import build, disect
+from DFr import slcan
 
 fpv=0
 can_toggle=1
@@ -19,11 +20,11 @@ def sendCan(data):
     astro_motor=[25,26]
 
     if stop ==1:
-        sob.write(bytes('C\r\n','utf-8'))
+        df.stop()
         can_toggle=0
         print("Stop")
     if start==1:
-        sob.write(bytes('O\r\n','utf-8'))
+        df.start()
         can_toggle=1
         print("Start")
 
@@ -32,13 +33,13 @@ def sendCan(data):
             global fpv
             fpvmsg = build(500,0,40,fpv%4)
             fpv+=1
-            print(fpvmsg)
-            sob.write(fpvmsg)
+            #print(fpvmsg)
+            df.write(fpvmsg)
 
         for i in range(4):
             msg=build(can_id,pwm[i],10,motors[i])
             #print(msg)
-            #sob.write(msg)
+            df.write(msg)
     
         if button[0]==1:
             astro[0]=2
@@ -51,12 +52,10 @@ def sendCan(data):
             astro[1]=1
         for i in range(2):
             msg=build(400,astro[i],10,astro_motor[i])
-            print(msg)
-            sob.write(msg)
+            df.write(msg)
         
-
-            #time.sleep(0.1)
-
+    print(df.write_buff)
+    #time.sleep(1)
 
 async def handle_client(reader, writer):
 
@@ -98,20 +97,8 @@ if __name__ == '__main__':
     cid={'idmo':200,'bio':300}
     interface = sys.argv[1]
     can_id = cid[sys.argv[2]]
-    sob=serial.Serial(
-        port='/dev/ttyACM'+str(interface),
-        #port= '/dev/pts/5',
-        baudrate=115200,
-        parity=serial.PARITY_NONE,
-        stopbits=serial.STOPBITS_ONE,
-        bytesize=serial.EIGHTBITS,
-        timeout=1
-        )
-    sob.write(bytes('h\r\n','utf-8'))
-    time.sleep(1)
-    sob.write(bytes('S4\r\n','utf-8'))
-    time.sleep(1)
-    sob.write(bytes('O\r\n','utf-8'))
+    
+    df=slcan(interface,10)
     
     asyncio.run(main())
 

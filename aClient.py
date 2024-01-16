@@ -39,7 +39,7 @@ async def write(writer):
         writer.write(message)
         await writer.drain()
         sys.stdout.flush()
-        #time.sleep(0.3)
+        time.sleep(0.5)
 
 
 async def main():
