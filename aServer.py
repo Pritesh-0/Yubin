@@ -41,9 +41,9 @@ def sendCan(data):
         for i in range(4):
             if pwm[i]!=pv[i]:
                 msg=build(can_id,pwm[i],10,motors[i])
-                print(msg)
-                sob.write(msg)
-                time.sleep(0.05)
+                #print(msg)
+                #sob.write(msg)
+                #time.sleep(0.2)
     
         if button[0]==1:
             astro[0]=2
@@ -55,12 +55,11 @@ def sendCan(data):
         elif button[3]==1:
             astro[1]=1
         for i in range(2):
-            msg=build(400,astro[i],10,astro_motor[i])
-            #print(msg)
-            #sob.write(msg)
-        
-
-            #time.sleep(0.1)
+            if astro[i]!=0:
+                msg=build(400,astro[i],10,astro_motor[i])
+                print(msg)
+                sob.write(msg)
+                time.sleep(0.2)
 
 
 async def handle_client(reader, writer):
