@@ -41,9 +41,9 @@ def sendCan(data):
         for i in range(4):
             if pwm[i]!=pv[i]:
                 msg=build(can_id,pwm[i],10,motors[i])
-                #print(msg)
-                #sob.write(msg)
-                #time.sleep(0.2)
+                print(msg)
+                sob.write(msg)
+                time.sleep(0.2)
     
         if button[0]==1:
             astro[0]=2
