@@ -35,11 +35,12 @@ class slcan:
         self.write_buff.append(frame)
 
 
-df = slcan(0)
-for i in range(10):
-    df.write(i)
+if __name__=='__main__':
+    df = slcan(0)
+    for i in range(10):
+        df.write(i)
 
 
-df.write(213432)
-print(df.write_buff)
+    df.write(213432)
+    print(df.write_buff)
         
