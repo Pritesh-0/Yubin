@@ -35,10 +35,11 @@ def sendCan(data):
             print(fpvmsg)
             sob.write(fpvmsg)
 
-        for i in range(4):
+        for i in range(1):
             msg=build(can_id,pwm[i],10,motors[i])
-            #print(msg)
-            #sob.write(msg)
+            print(msg)
+            sob.write(msg)
+            #time.sleep(0.1)
     
         if button[0]==1:
             astro[0]=2
@@ -51,8 +52,8 @@ def sendCan(data):
             astro[1]=1
         for i in range(2):
             msg=build(400,astro[i],10,astro_motor[i])
-            print(msg)
-            sob.write(msg)
+            #print(msg)
+            #sob.write(msg)
         
 
             #time.sleep(0.1)
