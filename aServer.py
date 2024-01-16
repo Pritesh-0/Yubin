@@ -8,6 +8,8 @@ from DFr import slcan
 
 fpv=0
 can_toggle=1
+
+pv=[1520000]*4
 def sendCan(data): 
     global can_toggle
     data = pickle.loads(data)
@@ -33,13 +35,14 @@ def sendCan(data):
             global fpv
             fpvmsg = build(500,0,40,fpv%4)
             fpv+=1
-            #print(fpvmsg)
+            print(fpvmsg)
             df.write(fpvmsg)
 
         for i in range(4):
-            msg=build(can_id,pwm[i],10,motors[i])
-            #print(msg)
-            df.write(msg)
+            if pwm[i]!=pv[i]:
+                msg=build(can_id,pwm[i],10,motors[i])
+                print(msg)
+                df.write(msg)
     
         if button[0]==1:
             astro[0]=2
@@ -51,8 +54,9 @@ def sendCan(data):
         elif button[3]==1:
             astro[1]=1
         for i in range(2):
-            msg=build(400,astro[i],10,astro_motor[i])
-            df.write(msg)
+            if astro[i]!=0:
+                msg=build(400,astro[i],10,astro_motor[i])
+                df.write(msg)
         
     df.send()
     #time.sleep(1)
