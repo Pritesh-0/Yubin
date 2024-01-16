@@ -21,6 +21,8 @@ class slcan:
         time.sleep(1)
         self._write('O')
         self._write('t123411223344')
+
+
         self.write_buff = collections.deque(maxlen=buffsize)
     
     def _write(self,message):
@@ -33,7 +35,11 @@ class slcan:
         self.write_buff.append(frame)
 
 
-
 df = slcan(0)
+for i in range(10):
+    df.write(i)
 
+
+df.write(213432)
+print(df.write_buff)
         
