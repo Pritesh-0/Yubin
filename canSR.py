@@ -11,8 +11,8 @@ def build(can_id, pwm, ID,motor):
     pd=''
     for i in range(6):
         pd+="{:02X}".format(data[i])
-    frame = 'T00000'+str(can_id)+str(dlc)+pd
-    #frame=bytes('T','utf-8')+bytes('00000'+str(can_id),'utf-8')+bytes(str(dlc),'utf-8')+bytes(pd,'utf-8')+bytes('\r\n','utf-8')
+    #frame = 'T00000'+str(can_id)+str(dlc)+pd
+    frame=bytes('T','utf-8')+bytes('00000'+str(can_id),'utf-8')+bytes(str(dlc),'utf-8')+bytes(pd,'utf-8')+bytes('\r\n','utf-8')
     return frame
 
 

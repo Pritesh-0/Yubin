@@ -7,6 +7,8 @@ from canSR import build, disect
 
 fpv=0
 can_toggle=1
+
+pv=[1520000]*4
 def sendCan(data): 
     global can_toggle
     data = pickle.loads(data)
@@ -34,12 +36,14 @@ def sendCan(data):
             fpv+=1
             print(fpvmsg)
             sob.write(fpvmsg)
+            time.sleep(0.5)
 
-        for i in range(1):
-            msg=build(can_id,pwm[i],10,motors[i])
-            print(msg)
-            sob.write(msg)
-            #time.sleep(0.1)
+        for i in range(4):
+            if pwm[i]!=pv[i]:
+                msg=build(can_id,pwm[i],10,motors[i])
+                print(msg)
+                sob.write(msg)
+                time.sleep(0.05)
     
         if button[0]==1:
             astro[0]=2
