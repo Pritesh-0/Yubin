@@ -22,7 +22,8 @@ def disect(frame):
     print('can_id: ',int(can_id.decode('utf-8')))
     print('dlc: ',dlc.decode('utf-8'))
     #print(data[4].decode('utf-8'))
-    #print('pwm: ', int.from_bytes(bytes(data[:8]),'little'))
+    pwm=data[:8]
+    print('pwm: ', int(''.join([x.decode('utf-8') for x in [pwm[6:],pwm[4:6],pwm[2:4],pwm[:2]]]),16))
     print('Id: ', int(data[8:10].decode('utf-8'),16))
     print('Motor_no: ',int(data[10:12].decode('utf-8'),16))
 
