@@ -3,6 +3,7 @@ import sys
 import pygame
 import time
 import pickle
+from canSR import disect
 
 def conv(v):
 
@@ -10,6 +11,18 @@ def conv(v):
     vs=float(v-(10000))/float(20000)
     val = 1920000 + int(vs*800000)
     return str(val)
+
+def getValues(data):
+    data=pickle.loads(data)
+    cid=data['can_id']
+    dlc=data['dlc']
+    pwm=data['pwm']
+    sid=data['id']
+    mot_num=data['Motor_no']
+
+    print(cid,dlc,pwm,sid,mot_num)
+
+
 
 def getPwm():
     pygame.event.get()
@@ -28,8 +41,9 @@ async def read(reader):
         data = await reader.read(1000)
         if not data:
             break
-
-        message = data.decode()
+        
+        getValues(data)
+        #message = data.decode()
         #print(f"Received: {message}")
         sys.stdout.flush()
 

@@ -19,14 +19,15 @@ def build(can_id, pwm, ID,motor):
 def disect(frame):
     #frame = frame.decode()
     can_id ,dlc, data = frame[1:9], frame[9:10], frame[10:22]
-    print('can_id: ',int(can_id.decode('utf-8')))
-    print('dlc: ',dlc.decode('utf-8'))
-    #print(data[4].decode('utf-8'))
     pwm=data[:8]
-    print('pwm: ', int(''.join([x.decode('utf-8') for x in [pwm[6:],pwm[4:6],pwm[2:4],pwm[:2]]]),16))
-    print('Id: ', int(data[8:10].decode('utf-8'),16))
-    print('Motor_no: ',int(data[10:12].decode('utf-8'),16))
-
+    fd = {
+            'can_id' : int(can_id.decode('utf-8')),
+            'dlc' : dlc.decode('utf-8'),
+            'pwm' : int(''.join([x.decode('utf-8') for x in [pwm[6:],pwm[4:6],pwm[2:4],pwm[:2]]]),16),
+            'Id' : int(data[8:10].decode('utf-8'),16),
+            'Motor_no' : int(data[10:12].decode('utf-8'),16)
+            }
+    return fd
 ids={
         'lattepanda':0x100,
         'gripper_arm':0x200,
@@ -39,7 +40,7 @@ if __name__ == '__main__':
         #msg = build(0x100,0102030405,10,11)
         f=b'T0000010066C1700001E05'
         #print(msg)
-        disect(f)
+        print(disect(f))
 
 
 
