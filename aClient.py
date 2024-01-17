@@ -14,13 +14,12 @@ def conv(v):
 
 def getValues(data):
     data=pickle.loads(data)
-    cid=data['can_id']
     dlc=data['dlc']
     pwm=data['pwm']
-    sid=data['id']
+    sid=data['Id']
     mot_num=data['Motor_no']
-
-    print(cid,dlc,pwm,sid,mot_num)
+    #print(data)
+    print(mot_num,pwm)
 
 
 

@@ -11,9 +11,15 @@ can_toggle=1
 pv=[1520000]*4
 
 def getSensor():
-    frame=sob.read(23)
-    fd = pickle.dumps(disect(frame))
-    return fd
+    ch=sob.read()
+    if ch==b'T':
+        frame=sob.read(22)
+        fd=disect(frame)
+        fd = pickle.dumps(fd)
+        return fd
+    else:
+        return b''
+
 
 def sendCan(data): 
     global can_toggle
@@ -81,7 +87,7 @@ async def handle_client(reader, writer):
     async def write():
         while True:
             response = await asyncio.to_thread(getSensor)
-            writer.write(respose)
+            writer.write(response)
             await writer.drain()
             sys.stdout.flush()
 
@@ -117,8 +123,8 @@ if __name__ == '__main__':
         bytesize=serial.EIGHTBITS,
         timeout=1
         )
-    sob.write(bytes('h\r\n','utf-8'))
-    time.sleep(1)
+    #sob.write(bytes('h\r\n','utf-8'))
+    #time.sleep(1)
     sob.write(bytes('S4\r\n','utf-8'))
     time.sleep(1)
     sob.write(bytes('O\r\n','utf-8'))

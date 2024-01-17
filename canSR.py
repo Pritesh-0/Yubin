@@ -18,7 +18,7 @@ def build(can_id, pwm, ID,motor):
 
 def disect(frame):
     #frame = frame.decode()
-    can_id ,dlc, data = frame[1:9], frame[9:10], frame[10:22]
+    can_id ,dlc, data = frame[0:8], frame[8:9], frame[9:21]
     pwm=data[:8]
     fd = {
             'can_id' : int(can_id.decode('utf-8')),
@@ -38,7 +38,7 @@ ids={
 
 if __name__ == '__main__':
         #msg = build(0x100,0102030405,10,11)
-        f=b'T0000010066C1700001E05'
+        f=b'0000010066C1700001E05'
         #print(msg)
         print(disect(f))
 
