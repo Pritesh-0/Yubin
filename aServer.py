@@ -125,7 +125,7 @@ if __name__ == '__main__':
         )
     #sob.write(bytes('h\r\n','utf-8'))
     #time.sleep(1)
-    sob.write(bytes('S4\r\n','utf-8'))
+    sob.write(bytes('S7\r\n','utf-8'))
     time.sleep(1)
     sob.write(bytes('O\r\n','utf-8'))
     
