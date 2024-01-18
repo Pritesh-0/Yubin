@@ -48,14 +48,14 @@ def sendCan(data):
             fpv+=1
             print(fpvmsg)
             sob.write(fpvmsg)
-            time.sleep(0.5)
+            time.sleep(1)
 
         for i in range(4):
             if pwm[i]!=pv[i]:
                 msg=build(can_id,pwm[i],10,motors[i])
                 print(msg)
                 sob.write(msg)
-                time.sleep(0.2)
+                #time.sleep(0.2)
     
         if button[0]==1:
             astro[0]=2
@@ -71,7 +71,7 @@ def sendCan(data):
                 msg=build(400,astro[i],10,astro_motor[i])
                 print(msg)
                 sob.write(msg)
-                time.sleep(0.2)
+                #time.sleep(0.2)
 
 
 async def handle_client(reader, writer):
