@@ -29,7 +29,8 @@ def getPwm():
 
     ax = [conv(joystick.get_axis(i)) for i in range(6)]
     btn = [joystick.get_button(i) for i in range(8)]
-    pos = pickle.dumps({"axis" : ax, "btn" : btn})
+    hat= list(joystick.get_hat(0))
+    pos = pickle.dumps({"axis" : ax, "btn" : btn, "hat" : hat})
     return pos
 
 async def read(reader):

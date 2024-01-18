@@ -29,6 +29,8 @@ def sendCan(data):
     data = pickle.loads(data)
     pwm=data["axis"]
     button=data["btn"]
+    hat=data["hat"]
+    px,py=hat[0],hat[1]
     joint=[pwm[1],pwm[4]]
     astro=[0,0]
     motors=[10,11,15,16]
@@ -78,6 +80,25 @@ def sendCan(data):
                 print(msg)
                 sob.write(msg)
                 #time.sleep(0.2)
+
+        if can_id==200:
+            if px==1:
+                msg=build(can_id,1,10,20)
+                print(msg)
+                sob.write(msg)
+            if px==-1:
+                msg=build(can_id,2,10,20)
+                print(msg)
+                sob.write(msg)
+            if py==1:
+                msg=build(can_id,1,10,21)
+                print(msg)
+                sob.write(msg)
+            if py==-1:
+                msg=build(can_id,2,10,21)
+                print(msg)
+                sob.write(msg)
+
 
 
 async def handle_client(reader, writer):
