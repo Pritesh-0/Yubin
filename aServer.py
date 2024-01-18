@@ -9,6 +9,7 @@ fpv=0
 can_toggle=1
 
 pv=[1520000]*4
+fpvp = 0
 
 def getSensor():
     ch=sob.read()
@@ -23,48 +24,53 @@ def getSensor():
 
 def sendCan(data): 
     global can_toggle
+    global fpv
+    global fpvp
     data = pickle.loads(data)
-    #print(data)
-    pwm=list(map(int,[data["pwm1"],data["pwm2"],data["pwm3"],data["pwm4"]]))
-    button=list(map(int,[data['b1'],data['b2'],data['b3'],data['b4'],data['b5']]))
-    stop,start=int(data["stop"]),int(data["start"])
+    pwm=data["axis"]
+    button=data["btn"]
+    joint=[pwm[1],pwm[4]]
     astro=[0,0]
     motors=[10,11,15,16]
     astro_motor=[25,26]
+    ypr_motor=[20,21]
 
-    if stop ==1:
+    if button[6]==1:
         sob.write(bytes('C\r\n','utf-8'))
         can_toggle=0
         print("Stop")
-    if start==1:
+    if button[7]==1:
         sob.write(bytes('O\r\n','utf-8'))
         can_toggle=1
         print("Start")
 
     if can_toggle==1:
         if button[4]==1:
-            global fpv
-            fpvmsg = build(500,0,40,fpv%4)
-            fpv+=1
-            print(fpvmsg)
-            sob.write(fpvmsg)
-            time.sleep(1)
+            if fpvp == 0:
+                fpvp=1
+                fpvmsg = build(500,0,40,fpv%4)
+                fpv+=1
+                print(fpvmsg)
+                sob.write(fpvmsg)
+            elif fpvp == 1:
+                fpvp=0
+            time.sleep(0.5)
 
-        for i in range(4):
-            if pwm[i]!=pv[i]:
-                msg=build(can_id,pwm[i],10,motors[i])
+        for i in range(2):
+            if joint[i]!=pv[i]:
+                msg=build(can_id,joint[i],10,motors[i])
                 print(msg)
                 sob.write(msg)
                 #time.sleep(0.2)
     
-        if button[0]==1:
+        if pwm[2]==192:
             astro[0]=2
-        elif button[2]==1:
+        elif pwm[2]==112:
             astro[0]=1
 
-        if button[1]==1:
+        if pwm[5]==192:
             astro[1]=2
-        elif button[3]==1:
+        elif pwm[5]==112:
             astro[1]=1
         for i in range(2):
             if astro[i]!=0:
