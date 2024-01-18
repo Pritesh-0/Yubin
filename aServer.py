@@ -31,11 +31,13 @@ def sendCan(data):
     button=data["btn"]
     hat=data["hat"]
     px,py=hat[0],hat[1]
-    joint=[pwm[1],pwm[4]]
+    joint=[pwm[1],pwm[4],pwm[0]]
     astro=[0,0]
-    motors=[10,11,15,16]
+    motors=[10,11,17]
     astro_motor=[25,26]
     ypr_motor=[20,21]
+    gripper=0
+
 
     if button[6]==1:
         sob.write(bytes('C\r\n','utf-8'))
@@ -58,12 +60,17 @@ def sendCan(data):
                 fpvp=0
             time.sleep(0.5)
 
-        for i in range(2):
+        for i in range(3):
             if joint[i]!=pv[i]:
                 msg=build(can_id,joint[i],10,motors[i])
                 print(msg)
                 sob.write(msg)
                 #time.sleep(0.2)
+
+        if pwm[3]>1550000 and pwm[3]<1900000:
+            gripper=1
+        if pwm[3]<1450000 and pwm[3]>1200000:
+            gripper=2
     
         if button[0]==1:
             astro[0]=2
@@ -82,6 +89,10 @@ def sendCan(data):
                 #time.sleep(0.2)
 
         if can_id==200:
+            if gripper!=0:
+                msg=build(can_id,gripper,10,27)
+                print(msg)
+                sob.write(msg)
             if px==1:
                 msg=build(can_id,1,10,20)
                 print(msg)
