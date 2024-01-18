@@ -63,14 +63,14 @@ def sendCan(data):
                 sob.write(msg)
                 #time.sleep(0.2)
     
-        if pwm[2]==192:
+        if button[0]==1:
             astro[0]=2
-        elif pwm[2]==112:
+        elif button[2]==1:
             astro[0]=1
 
-        if pwm[5]==192:
+        if button[1]==1:
             astro[1]=2
-        elif pwm[5]==112:
+        elif button[3]==1:
             astro[1]=1
         for i in range(2):
             if astro[i]!=0:
