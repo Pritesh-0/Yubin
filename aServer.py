@@ -150,9 +150,9 @@ async def handle_client(reader, writer):
     finally:
         writer.close()
 
-async def main():
+async def main(ip):
     server = await asyncio.start_server(
-        handle_client, '127.0.0.1', 8888
+        handle_client, ip, 8888
     )
 
     addr = server.sockets[0].getsockname()
@@ -164,6 +164,7 @@ if __name__ == '__main__':
     cid={'idmo':200,'bio':300}
     interface = sys.argv[1]
     can_id = cid[sys.argv[2]]
+    ip=sys.argv[3]
     sob=serial.Serial(
         port='/dev/ttyACM'+str(interface),
         #port= '/dev/pts/5',
@@ -179,5 +180,5 @@ if __name__ == '__main__':
     time.sleep(1)
     sob.write(bytes('O\r\n','utf-8'))
     
-    asyncio.run(main())
+    asyncio.run(main(ip))
 

@@ -58,8 +58,8 @@ async def write(writer):
         time.sleep(0.02)
 
 
-async def main():
-    reader, writer = await asyncio.open_connection('127.0.0.1', 8888)
+async def main(ip):
+    reader, writer = await asyncio.open_connection(ip, 8888)
 
     try:
         task_read = asyncio.create_task(read(reader))
@@ -71,8 +71,9 @@ async def main():
         await writer.wait_closed()
 
 if __name__ == '__main__':
+    ip=sys.argv[1]
     pygame.init()
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
-    asyncio.run(main())
+    asyncio.run(main(ip))
 
