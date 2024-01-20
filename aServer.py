@@ -8,7 +8,7 @@ from canSR import build, disect
 fpv=0
 can_toggle=1
 
-pv=[1520000]*4
+pv=[1520000]*2 + [1500000]
 fpvp = 0
 
 def getSensor():
@@ -26,6 +26,7 @@ def sendCan(data):
     global can_toggle
     global fpv
     global fpvp
+    global pv
     data = pickle.loads(data)
     pwm=data["axis"]
     button=data["btn"]
@@ -59,8 +60,19 @@ def sendCan(data):
             elif fpvp == 1:
                 fpvp=0
             time.sleep(0.5)
+        
+        servo_prev=pv[2]
+        if joint[2]>1500000 and joint[2]<=2400000 and pv[2]<2400000:
+            pv[2]+=10000
+        if joint[2]<1500000 and joint[2]>=600000 and pv[2]>600000:
+            pv[2]-=10000
+        #print(pv[2])
+        if servo_prev!=pv[2]:
+            msg=build(can_id,pv[2],10,motors[2])
+            print(msg)
+            sob.write(msg)
 
-        for i in range(3):
+        for i in range(2):
             if joint[i]!=pv[i]:
                 msg=build(can_id,joint[i],10,motors[i])
                 print(msg)

@@ -27,7 +27,8 @@ def getPwm():
     pygame.event.get()
     joystick=joysticks[0]
 
-    ax = [conv(joystick.get_axis(i)) for i in range(6)]
+    ax = [ser(joystick.get_axis(0))]+[conv(joystick.get_axis(i)) for i in range(1,6)]
+    #print(ax)
     btn = [joystick.get_button(i) for i in range(8)]
     hat= list(joystick.get_hat(0))
     pos = pickle.dumps({"axis" : ax, "btn" : btn, "hat" : hat})
