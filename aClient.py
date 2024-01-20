@@ -12,14 +12,20 @@ def conv(v):
     val = 1920000 + int(vs*800000)
     return val
 
+def ser(v):
+    v=int(v*10000)
+    vs=float(v-(10000))/float(20000)
+    val = 2400000 + int(vs*1800000)
+    return val
+
 def getValues(data):
     data=pickle.loads(data)
     dlc=data['dlc']
-    pwm=data['pwm']
+    value=data['pwm']
     sid=data['Id']
     mot_num=data['Motor_no']
     #print(data)
-    print(mot_num,pwm)
+    print(mot_num,value)
 
 
 
