@@ -19,13 +19,15 @@ def ser(v):
     return val
 
 def getValues(data):
+
+    sensors = {0:'MQ136', 1:'MQ2', 2:'DHT11(Temprature)', 3:'DHT11(Humidity)', 8:'MQ137', 9:'MQ7'}
     data=pickle.loads(data)
     dlc=data['dlc']
     value=data['pwm']
     sid=data['Id']
     mot_num=data['Motor_no']
     #print(data)
-    print(mot_num,value)
+    print(sensors[mot_num],' : ',value)
 
 
 
