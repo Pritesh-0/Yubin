@@ -27,7 +27,11 @@ def sendCan(data):
     global fpv
     global fpvp
     global pv
-    data = pickle.loads(data)
+    try:
+        data = pickle.loads(data)
+    except Exception:
+        return
+
     pwm=data["axis"]
     button=data["btn"]
     hat=data["hat"]
